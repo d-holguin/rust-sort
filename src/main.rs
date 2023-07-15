@@ -1,32 +1,39 @@
 use rand::prelude::*;
-use rust_sorting_visualizer::Sorter;
 use rust_sorting_visualizer::sort_evaluator::SortEvaluator;
 use rust_sorting_visualizer::sorts::bubblesort::BubbleSort;
 use rust_sorting_visualizer::sorts::insertionsort::InsertionSort;
 use rust_sorting_visualizer::sorts::quicksort::QuickSort;
 use rust_sorting_visualizer::sorts::selectionsort::SelectionSort;
+use rust_sorting_visualizer::Sorter;
 use std::cell::Cell;
 use std::rc::Rc;
-
-
 
 fn main() {
     let mut rand = rand::thread_rng();
     let counter = Rc::new(Cell::new(0));
 
-    println!("algorithm n comparisons time");
+    print_header();
     for &n in &[0, 1, 10, 100, 1000, 5000] {
         let values = generate_values::<usize>(n, &counter, &mut rand);
 
         // run each sorting algorithm once per size of n
         test_algorithm("bubble", BubbleSort, &values, &counter);
-        test_algorithm("insertion-smart", InsertionSort { smart: true }, &values, &counter);
-        test_algorithm("insertion-dumb", InsertionSort { smart: false }, &values, &counter);
+        test_algorithm(
+            "insertion-smart",
+            InsertionSort { smart: true },
+            &values,
+            &counter,
+        );
+        test_algorithm(
+            "insertion-dumb",
+            InsertionSort { smart: false },
+            &values,
+            &counter,
+        );
         test_algorithm("selection", SelectionSort, &values, &counter);
         test_algorithm("quick", QuickSort, &values, &counter);
     }
 }
-
 
 fn bench<T: Ord + Clone, S: Sorter>(
     sorter: S,
@@ -68,9 +75,21 @@ fn test_algorithm<T: Ord + Clone, S: Sorter>(
     counter: &Cell<usize>,
 ) {
     let took = bench(sorter, &values, &counter);
+
     print_results(name, values.len(), took.0, took.1);
 }
 
+fn print_header() {
+    println!(
+        "{:<20} | {:<10} | {:<15} | {:<10}",
+        "Algorithm", "n", "Comparisons", "Time"
+    );
+    println!("{}", "-".repeat(60));
+}
+
 fn print_results(name: &str, n: usize, comparisons: usize, time: f64) {
-    println!("{} {} {} {}", name, n, comparisons, time);
+    println!(
+        "{:<20} | {:<10} | {:<15} | {:<10.6}",
+        name, n, comparisons, time
+    );
 }
