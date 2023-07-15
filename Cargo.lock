@@ -62,7 +62,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "terminal_rust"
+name = "rust-sorting-visualizer"
 version = "0.1.0"
 dependencies = [
  "rand",

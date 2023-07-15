@@ -1,75 +1,76 @@
 use rand::prelude::*;
-use std::io::{stdout, Write};
-use std::thread::sleep;
-use std::time::{Duration, Instant};
+use rust_sorting_visualizer::Sorter;
+use rust_sorting_visualizer::sort_evaluator::SortEvaluator;
+use rust_sorting_visualizer::sorts::bubblesort::BubbleSort;
+use rust_sorting_visualizer::sorts::insertionsort::InsertionSort;
+use rust_sorting_visualizer::sorts::quicksort::QuickSort;
+use rust_sorting_visualizer::sorts::selectionsort::SelectionSort;
+use std::cell::Cell;
+use std::rc::Rc;
 
-fn bubble_sort(vec: &mut Vec<i32>) {
-    let n = vec.len();
-    for i in 0..n - 1 {
-        for j in 0..n - i - 1 {
-            if vec[j] > vec[j + 1] {
-                let temp = vec[j];
-                vec[j] = vec[j + 1];
-                vec[j + 1] = temp;
-            }
 
-            let mut output = String::new();
-            for (idx, &x) in vec.iter().enumerate() {
-                if (idx == j || idx == j + 1) && i != n - 2 {
-                    output.push_str(&format!("\x1b[31m{}\x1b[0m ", x));
-                } else if idx >= n - i || i == n - 2 {
-                    output.push_str(&format!("\x1b[32m{}\x1b[0m ", x));
-                } else {
-                    output.push_str(&format!("{} ", x));
-                }
-            }
-            output = format!("\rBubble sort: {}", output);
-            print!("{}", output);
-            stdout().flush().unwrap();
-
-            sleep(Duration::from_millis(1));
-        }
-    }
-    println!();
-}
-
-fn partition(vec: &mut Vec<i32>, low: usize, high: usize) -> usize {
-    let pivot = vec[high];
-    let mut i = low;
-    for j in low..high {
-        if vec[j] <= pivot {
-            vec.swap(i, j);
-            i += 1;
-        }
-    }
-    vec.swap(i, high);
-    i
-}
-
-fn quick_sort(vec: &mut Vec<i32>, low: usize, high: usize) {
-    if low < high {
-        let pivot_index = partition(vec, low, high);
-        quick_sort(vec, low, pivot_index - 1);
-        quick_sort(vec, pivot_index + 1, high);
-    }
-}
 
 fn main() {
-    let mut rng = rand::thread_rng();
-    let range = 1..25;
-    let mut vec: Vec<i32> = range.clone().collect();
-    vec.shuffle(&mut rng);
-    let mut vec_1 = vec.clone();
-    let mut vec_2 = vec.clone();
-    let start = Instant::now();
-    bubble_sort(&mut vec_1);
-    let elapsed = start.elapsed();
-    println!("Finished in {:?}", elapsed);
-    //
-    // println!("Range of {} to {}", range.start, range.end - 1);
-    // let start = Instant::now();
-    // let vec_2_len = vec_2.len();
-    // quick_sort(&mut vec_2, 0, vec_2_len - 1);
-    // let elapsed = start.elapsed();
-    // println!("Finished in {:?}", elapsed);
+    let mut rand = rand::thread_rng();
+    let counter = Rc::new(Cell::new(0));
+
+    println!("algorithm n comparisons time");
+    for &n in &[0, 1, 10, 100, 1000, 5000] {
+        let values = generate_values::<usize>(n, &counter, &mut rand);
+
+        // run each sorting algorithm once per size of n
+        test_algorithm("bubble", BubbleSort, &values, &counter);
+        test_algorithm("insertion-smart", InsertionSort { smart: true }, &values, &counter);
+        test_algorithm("insertion-dumb", InsertionSort { smart: false }, &values, &counter);
+        test_algorithm("selection", SelectionSort, &values, &counter);
+        test_algorithm("quick", QuickSort, &values, &counter);
+    }
+}
+
+
+fn bench<T: Ord + Clone, S: Sorter>(
+    sorter: S,
+    values: &[SortEvaluator<T>],
+    counter: &Cell<usize>,
+) -> (usize, f64) {
+    let mut values: Vec<_> = values.to_vec();
+    counter.set(0);
+    let time = std::time::Instant::now();
+    sorter.sort(&mut values);
+    let took = time.elapsed();
+    let count = counter.get();
+    // assert!(values.is_sorted());
+    for i in 1..values.len() {
+        assert!(values[i] >= values[i - 1]);
+    }
+    (count, took.as_secs_f64())
+}
+
+fn generate_values<T: Ord + Clone>(
+    n: usize,
+    counter: &Rc<Cell<usize>>,
+    rand: &mut ThreadRng,
+) -> Vec<SortEvaluator<usize>> {
+    let mut values = Vec::with_capacity(n);
+    for _ in 0..n {
+        values.push(SortEvaluator {
+            t: rand.gen::<usize>(),
+            cmps: Rc::clone(&counter),
+        });
+    }
+    values
+}
+
+fn test_algorithm<T: Ord + Clone, S: Sorter>(
+    name: &str,
+    sorter: S,
+    values: &[SortEvaluator<T>],
+    counter: &Cell<usize>,
+) {
+    let took = bench(sorter, &values, &counter);
+    print_results(name, values.len(), took.0, took.1);
+}
+
+fn print_results(name: &str, n: usize, comparisons: usize, time: f64) {
+    println!("{} {} {} {}", name, n, comparisons, time);
 }
