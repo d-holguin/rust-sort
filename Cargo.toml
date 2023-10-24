@@ -1,5 +1,5 @@
 [package]
-name = "rust-sorting-visualizer"
+name = "rust-sort"
 version = "0.1.0"
 edition = "2021"
 
@@ -15,3 +15,5 @@ name = "sorter"
 
 [dependencies]
 rand = "0.8.5"
+thiserror = "1.0.43"
+anyhow = "1.0.72"

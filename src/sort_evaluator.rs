@@ -1,9 +1,29 @@
-use std::{cell::Cell, rc::Rc, cmp::Ordering};
+use std::{cell::Cell, cmp::Ordering, rc::Rc};
+
+use rand::Rng;
+
 
 #[derive(Clone)]
 pub struct SortEvaluator<T> {
     pub t: T,
     pub cmps: Rc<Cell<usize>>,
+}
+
+impl<T: Ord + Clone> SortEvaluator<T> {
+    pub fn generate_values(
+        n: usize,
+        counter: &Rc<Cell<usize>>,
+        rand: &mut rand::prelude::ThreadRng,
+    ) -> Vec<SortEvaluator<usize>> {
+        let mut values = Vec::with_capacity(n);
+        for _ in 0..n {
+            values.push(SortEvaluator {
+                t: rand.gen::<usize>(),
+                cmps: Rc::clone(&counter),
+            });
+        }
+        values
+    }
 }
 
 impl<T: PartialEq> PartialEq for SortEvaluator<T> {
