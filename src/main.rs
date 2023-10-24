@@ -1,8 +1,5 @@
-use crossterm::event::{Event, KeyCode};
-use crossterm::terminal::{
-    disable_raw_mode, enable_raw_mode, EnterAlternateScreen, LeaveAlternateScreen,
-};
-use crossterm::{event, execute};
+
+
 use rust_sort::sort_evaluator::SortEvaluator;
 use rust_sort::Sorter;
 use std::cell::Cell;
