@@ -1,4 +1,5 @@
-use crate::Sorter;
+use crate::sorter::Sorter;
+
 
 #[derive(Debug)]
 pub struct QuickSort;

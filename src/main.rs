@@ -1,18 +1,17 @@
-use rust_sort::sort_evaluator::SortEvaluator;
-use rust_sort::sorts::bubblesort::BubbleSort;
-use rust_sort::sorts::insertionsort::InsertionSort;
-use rust_sort::Sorter;
-use rust_sort::sorts::quicksort::QuickSort;
+use sorter::sort_evaluator::SortEvaluator;
+use sorter::sorter::Sorter;
+use sorter::sorts::gnomesort::GnomeSort;
 use std::cell::Cell;
 use std::error::Error;
 use std::rc::Rc;
 
 fn main() {
-    let sorter = QuickSort;
+    let sorter = GnomeSort;
+    let sort_size = 10_000;
     let counter = Rc::new(Cell::new(0));
     let rand = &mut rand::thread_rng();
-    let values = SortEvaluator::<usize>::generate_values(20_000, &counter, rand);
-    let result = test_algorithm(BubbleSort, &values, &counter);
+    let values = SortEvaluator::<usize>::generate_values(sort_size, &counter, rand);
+    let result = test_algorithm(&sorter, &values, &counter);
     match result {
         Ok(metrics) => println!(
             "{sorter:?}\n\
@@ -34,7 +33,7 @@ struct SortMetrics {
 }
 
 fn bench<T: Ord + Clone, S: Sorter>(
-    sorter: S,
+    sorter: &S,
     values: &mut [SortEvaluator<T>],
     counter: &Cell<usize>,
 ) -> (usize, f64) {
@@ -50,7 +49,7 @@ fn bench<T: Ord + Clone, S: Sorter>(
 }
 
 fn test_algorithm<T: Ord + Clone, S: Sorter>(
-    sorter: S,
+    sorter: &S,
     values: &[SortEvaluator<T>],
     counter: &Cell<usize>,
 ) -> Result<SortMetrics, Box<dyn Error>> {
