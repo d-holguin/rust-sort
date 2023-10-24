@@ -1,5 +1,6 @@
 use crate::Sorter;
 
+#[derive(Debug)]
 pub struct InsertionSort {
     pub smart: bool,
 }

@@ -1,14 +1,37 @@
-
-
 use rust_sort::sort_evaluator::SortEvaluator;
+use rust_sort::sorts::bubblesort::BubbleSort;
+use rust_sort::sorts::insertionsort::InsertionSort;
 use rust_sort::Sorter;
+use rust_sort::sorts::quicksort::QuickSort;
 use std::cell::Cell;
 use std::error::Error;
-use std::io::{self, Stdout};
 use std::rc::Rc;
-use std::time::Duration;
 
-fn main() {}
+fn main() {
+    let sorter = QuickSort;
+    let counter = Rc::new(Cell::new(0));
+    let rand = &mut rand::thread_rng();
+    let values = SortEvaluator::<usize>::generate_values(20_000, &counter, rand);
+    let result = test_algorithm(BubbleSort, &values, &counter);
+    match result {
+        Ok(metrics) => println!(
+            "{sorter:?}\n\
+             Total Values: {total_values}\n\
+             Comparisons: {count}\n\
+             Time: {time:.3} seconds",
+            sorter = sorter,
+            total_values = values.len(),
+            count = metrics.count,
+            time = metrics.time
+        ),
+        Err(e) => eprintln!("Error: {}", e),
+    }
+}
+#[derive(Debug)]
+struct SortMetrics {
+    count: usize,
+    time: f64,
+}
 
 fn bench<T: Ord + Clone, S: Sorter>(
     sorter: S,
@@ -30,7 +53,10 @@ fn test_algorithm<T: Ord + Clone, S: Sorter>(
     sorter: S,
     values: &[SortEvaluator<T>],
     counter: &Cell<usize>,
-) -> Result<(usize, f64), Box<dyn Error>> {
+) -> Result<SortMetrics, Box<dyn Error>> {
     let result = bench(sorter, &mut values.to_vec(), counter);
-    Ok(result)
+    Ok(SortMetrics {
+        count: result.0,
+        time: result.1,
+    })
 }

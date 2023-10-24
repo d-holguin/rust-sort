@@ -1,5 +1,6 @@
 use crate::Sorter;
 
+#[derive(Debug)]
 pub struct BubbleSort;
 
 impl Sorter for BubbleSort {
