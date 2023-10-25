@@ -1,6 +1,6 @@
 use sorter::sort_evaluator::SortEvaluator;
 use sorter::sorter::Sorter;
-use sorter::sorts::gnomesort::GnomeSort;
+use sorter::sorts::gnome_sort::GnomeSort;
 use std::cell::Cell;
 use std::error::Error;
 use std::rc::Rc;
