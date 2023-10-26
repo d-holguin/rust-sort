@@ -42,10 +42,25 @@ fn print_metrics(metrics: Result<SortMetrics, Box<dyn Error>>) {
                  Time: {time:.4} seconds\n",
                 sorter = metrics.sorter,
                 total_values = metrics.total_values,
-                count = metrics.count,
+                count = format_number_with_commas(metrics.count),
                 time = metrics.time
             );
         }
         Err(e) => eprintln!("Error: {}", e),
     }
+}
+
+fn format_number_with_commas(number: usize) -> String {
+    let num_str = number.to_string();
+    let mut result = String::new();
+    let mut char_count = 0;
+    for ch in num_str.chars().rev() {
+        if char_count > 0 && char_count % 3 == 0 {
+            result.insert(0, ',');
+        }
+        result.insert(0, ch);
+        char_count += 1;
+    }
+
+    result
 }

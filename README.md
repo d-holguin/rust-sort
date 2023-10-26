@@ -2,18 +2,24 @@
 ```
 InsertionSort { smart: true }
 Total Values: 50000
-Comparisons: 711317
-Time: 0.3923 seconds
+Comparisons: 711,335
+Time: 0.3041 seconds
 
 InsertionSort { smart: false }
 Total Values: 50000
-Comparisons: 627548364
-Time: 19.7873 seconds
+Comparisons: 625,217,462
+Time: 19.6038 seconds
+
+GnomeSort
+Total Values: 50000
+Comparisons: 1,249,616,281
+Time: 29.0675 seconds
 
 BubbleSort
 Total Values: 50000
-Comparisons: 2478800423
-Time: 70.7365 seconds
+Comparisons: 1,249,753,508
+Time: 39.4107 seconds
+
 ```
 
 ## Usage
@@ -54,7 +60,7 @@ fn print_metrics(metrics: Result<SortMetrics, Box<dyn Error>>) {
                  Time: {time:.4} seconds\n",
                 sorter = metrics.sorter,
                 total_values = metrics.total_values,
-                count = metrics.count,
+                count = format_number_with_commas(metrics.count),
                 time = metrics.time
             );
         }

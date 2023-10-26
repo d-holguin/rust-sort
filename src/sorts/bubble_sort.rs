@@ -8,20 +8,19 @@ impl Sorter for BubbleSort {
     where
         T: Ord,
     {
-        let mut swapped = true;
-        while swapped {
-            swapped = false;
-            for i in 1..slice.len() {
+        let mut n = slice.len();
+        while n > 0 {
+            let mut new_n = 0;
+            for i in 1..n {
                 if slice[i - 1] > slice[i] {
                     slice.swap(i - 1, i);
-                    swapped = true;
+                    new_n = i;
                 }
             }
+            n = new_n;
         }
     }
 }
-
-
 
 #[test]
 fn bubble_works() {
