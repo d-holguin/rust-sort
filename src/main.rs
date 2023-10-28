@@ -1,7 +1,7 @@
 use rayon::scope;
 use sorter::sort_evaluator::{SortEvaluator, SortMetrics};
 use sorter::sorter::Sorter;
-use sorter::sorts::{BubbleSort, GnomeSort, InsertionSort};
+use sorter::sorts::{BubbleSort, GnomeSort, InsertionSort, QuickSort};
 use std::cell::Cell;
 use std::error::Error;
 use std::sync::Arc;
@@ -19,6 +19,9 @@ fn main() {
         });
         s.spawn(|_| {
             bench_sorter(GnomeSort);
+        });
+        s.spawn(|_| {
+            bench_sorter(QuickSort);
         });
     });
 }
