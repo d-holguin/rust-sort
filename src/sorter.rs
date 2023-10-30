@@ -3,7 +3,7 @@ use std::fmt::Debug;
 pub trait Sorter: Debug {
     fn sort<T>(&self, slice: &mut [T])
     where
-        T: Ord;
+        T: Ord + Clone;
 }
 
 #[cfg(test)]

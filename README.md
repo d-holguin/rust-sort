@@ -1,24 +1,34 @@
 ## Example output
 ```
+QuickSort
+Total Values: 25000
+Comparisons: 548,877
+Time: 0.0174 seconds
+
+MergeSort
+Total Values: 25000
+Comparisons: 333,976
+Time: 0.0478 seconds
+
 InsertionSort { smart: true }
-Total Values: 50000
-Comparisons: 711,335
-Time: 0.3041 seconds
+Total Values: 25000
+Comparisons: 330,668
+Time: 0.1075 seconds
 
 InsertionSort { smart: false }
-Total Values: 50000
-Comparisons: 625,217,462
-Time: 19.6038 seconds
+Total Values: 25000
+Comparisons: 156,662,963
+Time: 5.2156 seconds
 
 GnomeSort
-Total Values: 50000
-Comparisons: 1,249,616,281
-Time: 29.0675 seconds
+Total Values: 25000
+Comparisons: 310,906,832
+Time: 7.7037 seconds
 
 BubbleSort
-Total Values: 50000
-Comparisons: 1,249,753,508
-Time: 39.4107 seconds
+Total Values: 25000
+Comparisons: 312,443,748
+Time: 10.7045 seconds
 
 ```
 

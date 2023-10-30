@@ -59,7 +59,7 @@ fn quicksort<T: Ord>(slice: &mut [T]) {
 }
 
 #[test]
-fn smart_insertion_works() {
+fn quick_sort_works() {
     let mut things = vec![4, 2, 3, 5, 1];
     QuickSort.sort(&mut things);
     assert_eq!(things, &[1, 2, 3, 4, 5]);

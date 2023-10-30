@@ -1,7 +1,7 @@
 use rayon::scope;
 use sorter::sort_evaluator::{SortEvaluator, SortMetrics};
 use sorter::sorter::Sorter;
-use sorter::sorts::{BubbleSort, GnomeSort, InsertionSort, QuickSort};
+use sorter::sorts::{BubbleSort, GnomeSort, InsertionSort, MergeSort, QuickSort};
 use std::cell::Cell;
 use std::error::Error;
 use std::sync::Arc;
@@ -23,11 +23,14 @@ fn main() {
         s.spawn(|_| {
             bench_sorter(QuickSort);
         });
+        s.spawn(|_| {
+            bench_sorter(MergeSort);
+        });
     });
 }
 
 fn bench_sorter(sorter: impl Sorter) {
-    let sort_size = 50_000;
+    let sort_size = 25_000;
     let counter = Arc::new(Cell::new(0));
     let rand = &mut rand::thread_rng();
     let mut values = SortEvaluator::<usize>::generate_values(sort_size, &counter, rand);
